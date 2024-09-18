@@ -1,0 +1,410 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cleese Assignment (For Students)
+% LaTeX Template
+% Version 2.0 (27/5/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Author:
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[fleqn]{article}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\usepackage{amsmath, amssymb}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\sgn}{sgn}
+
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+% Required
+\newcommand{\assignmentQuestionName}{Question} % The word to be used as a prefix to question numbers; example alternatives: Problem, Exercise
+\newcommand{\assignmentClass}{Communication Systems (Taught by Mohammad Hadi)\\Assignment 4 (Due on DDD.,\ mmm.\ dd,\ yyyy)} % Course (Lecturer)\\Assignment (Due date)
+\newcommand{\assignmentTitle}{} % Assignment title or name
+\newcommand{\assignmentAuthorName}{Radin khayyam\\99101579} % Student name\\Student number
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+\lstset{language=Matlab,%
+    basicstyle={\scriptsize},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=5pt, % this defines how far the numbers are from the text
+    emph=[1]{break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\assignmentSection{Mathematical Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 1
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{First-order hold (FOH) performs a linear interpolation to generate the sampled signal
+$$
+y(t)=\sum_{k=-\infty}^\infty x(kT_s)\Lambda(\frac{t-kT_s}{T_s})
+$$
+from the band-limited signal $x(t)$ with bandwidth $W$.
+}
+
+%--------------------------------------------
+\begin{subquestion}{Find the spectrum of the sampled signal $Y(f)$.} 
+\answer{
+\[ y(t)=\sum_{k=-\infty}^\infty x(kT_s)\Lambda(\frac{t-kT_s}{T_s}) \rightarrow y(t) =\Lambda(\frac{t}{T_s}) *  \sum_{k=-\infty}^\infty x(kT_s)\delta(t-kT_s)\]
+\[\rightarrow Y(f) = T_s \sinc^{2}(fT_s)\times \frac{1}{T_s}\sum_{k=-\infty}^\infty X(f-\frac{n}{T_s}) = \boxed{\sinc^2 (fT_s)\times \sum_{k=-\infty}^\infty X(f-\frac{k}{T_s})  } \]
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Propose a condition on the sampling period $T_s$ for the perfect reconstruction of the original signal $x(t)$ from the sampled signal $y(t)$.
+} 
+\answer{
+For perfect reconstruction we need to avoid aliasing so similar to Nyquist theorem: $\boxed{ T_s \leq \frac{1}{2W} }$ 
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Obtain an expression for the reconstruction filter $H(f)$.
+} 
+\answer{
+\[ X(f) = H(f)Y(f) \Rightarrow \boxed{H(f) = \frac{1}{\sinc^2 (fT_s)} \sqcap (\frac{f}{2W'})} \hspace{0.5cm} , \hspace{0.5cm} W \leq W' \leq \frac{1}{T_s} -W \]
+}
+\end{subquestion}
+
+\end{question}
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	QUESTION 2
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+\questiontext{The frequency-domain sampling theorem says that if $x(t)$ is a time-limited signal such that $x(t)=0$ for $|t|\ge T$, then $X(f)$ is completely determined by its sample values $X(nf_0)$ with $f_0\le 1/2T$. Prove this theorem.
+}
+\answer{
+\[X_\delta(f)=\sum_{n=-\infty}^\infty X(nf_s)\delta(f-nf_s) \Rightarrow x_\delta(t)=\frac{1}{f_s}\sum_{n=-\infty}^\infty x(t-\frac{n}{f_s}) \]
+as we know x(t) has none zero amounts just in [-T,T], so in order to avoid aliasing and be able to reconstruct x(t) we must have :
+\[\frac{1}{f_s} \geq 2T \Rightarrow \boxed{f_s \leq \frac{1}{2T} }  \]
+}
+
+\end{question}
+%----------------------------------------------------------------------------------------
+%	QUESTION 3
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+\questiontext{The analog signal $x(t)$ which takes the values of $[-x_{m},+x_m]$ uniformly passes a uniform midrise quantizer with $N=2^\nu$ levels. Find the SQNR of the quantizer. 
+}
+
+\answer{
+X uniformly distributed in $[-x_m,x_m]$,
+\[\rightarrow f_x(x) = \left \{
+						\begin{array}{ll}
+							\frac{1}{2x_m}, \hspace{1cm} |x| \leq x_m \\~\\
+								0,  \hspace{2cm} O.W
+						\end{array}
+						\right.
+\]
+\[\Rightarrow E[X^2]=\int_{-\infty}^{+\infty} x^2 f_x(x) \,dx = \frac{1}{2x_m}\int_{-x_m}^{+x_m}x^2 \,dx = \frac{x_m^2}{3} \]
+cause to unform distribution of X(t) and unform quantizer, it is obvious that $\tilde{X}=X- Q(x)$ has a uniform distribution too.\\
+Now we assume each step of the quantizer have $\Delta$ distance and we consider the center of this range for quantization amount, so for each x, the amount of $\tilde{X}$ can be in the range of $[-\frac{\Delta}{2},+\frac{\Delta}{2}$ and as we mentioned it has uniform distribution,
+\[\rightarrow f_{\tilde{x}}(\tilde{x}) 
+						\left \{
+						\begin{array}{ll}
+							\frac{1}{\Delta}, \hspace{1cm} |\tilde{x}| \leq \frac{\Delta}{2} \\~\\
+								0,  \hspace{2cm} O.W
+						\end{array}
+						\right.
+\]
+\[\Rightarrow E[(X-Q(x))^2]=E[\tilde{X}^2]=\int_{-\infty}^{+\infty} \tilde{x}^2 f_{\tilde{x}}(\tilde{x}) \,d\tilde{x} = \frac{1}{\Delta}\int_{-\frac{\Delta}{2}}^{+\frac{\Delta}{2}} \tilde{x}^2 \,d\tilde{x} = \frac{\Delta^2}{12}\]
+As it is mentioned in question, we have N level for quantizition,
+\[\rightarrow \Delta=\frac{2x_m}{N} \rightarrow E[(X-Q(X))^2] = \frac{x_m^2}{3N^2} \]
+\[\Rightarrow SQNR = \frac{E[X^2]}{ E[(X-Q(x))^2]}=\frac{ \frac{x_m^2}{3}}{\frac{x_m^2}{3N^2} } = \boxed{N^2}  \] 
+}
+
+\end{question}
+
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 4
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{The lowpass signal $x(t)$ with a bandwidth of $W$ is sampled with a sampling interval of $T_s$ and the signal
+$$
+x_p(t)=\sum_{n=-\infty}^\infty x(nT_s)p(t-nT_s)
+$$
+is reconstructed from the samples, where $p(t)$ is an arbitrary-shaped pulse (not necessarily time limited to the interval $[0, T_s]$).
+}
+%--------------------------------------------
+\begin{subquestion}{Find the Fourier transform of $x_p(t)$.
+} 
+\answer{
+\[x_p(t)=\sum_{n=-\infty}^\infty x(nT_s)p(t-nT_s) = p(t) *\sum_{n=-\infty}^\infty x(nT_s)\delta(t-nT_s)   \]
+\[\Rightarrow \boxed{X_p(f) = P(f)\times \frac{1}{T_s} \sum_{n=-\infty}^\infty X(f-\frac{n}{T_s})} \]
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Find the conditions for perfect reconstruction of $x(t)$ from $x_p(t)$.
+} 
+\answer{
+To have a perfect reconstruction we must avoid aliasing so, $\frac{1}{T_s} \leq 2W $
+\\
+Also the P(f) must be invertible for $|f|<W$
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Determine the required reconstruction filter.
+} 
+\answer{
+\[ X(f) = H(f)Y(f) \Rightarrow \boxed{H(f) = \frac{T_s}{P(f)} \sqcap (\frac{f}{2W'})} \hspace{0.5cm} , \hspace{0.5cm} W \leq W' \leq \frac{1}{T_s} -W \]
+}
+\end{subquestion}
+
+\end{question}
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	QUESTION 5
+%----------------------------------------------------------------------------------------
+\begin{question}
+
+\questiontext{The lowpass signal $x(t)$ with a bandwidth of $W$ is sampled at the Nyquist rate and the signal
+$$
+y(t)=\sum_{n=-\infty}^\infty (-1)^nx(nT_s)\delta(t-nT_s)
+$$
+is generated.
+}
+
+%--------------------------------------------
+\begin{subquestion}{Find the Fourier transform of $y(t)$.} 
+\answer{
+\[ y(t)=\sum_{n=-\infty}^\infty (-1)^nx(nT_s)\delta(t-nT_s) = x(t) \sum_{n=-\infty}^\infty (-1)^n\delta(t-nT_s)  \]
+\[ = x(t) \left(\sum_{k=-\infty}^\infty \delta(t-2kT_s) - \sum_{k=-\infty}^\infty \delta(t-T_s-2kT_s)\right) \]
+\[\Rightarrow Y(f)=X(f) * \mathcal{F}\{\sum_{k=-\infty}^\infty \delta(t-2kT_s) - \sum_{k=-\infty}^\infty \delta(t-T_s-2kT_s) \}  \]
+\[= X(f) * \left[ \frac{1}{2T_s}\sum_{k=-\infty}^\infty \delta(f-\frac{k}{2T_s}) - \frac{1}{2T_s}\sum_{k=-\infty}^\infty \delta(f-\frac{k}{2T_s})e^{-j2\pi fT_st} \right]  \]
+\[= \frac{1}{2T_s}\sum_{k=-\infty}^\infty X(f-\frac{k}{2T_s}) - \frac{1}{2T_s}\sum_{k=-\infty}^\infty X(f-\frac{k}{2T_s})e^{-j2\pi \frac{k}{2T_s}T_st} \]
+\[=\frac{1}{2T_s}\sum_{k=-\infty}^\infty X(f-\frac{k}{2T_s}) - \frac{1}{2T_s}\sum_{k=-\infty}^\infty X(f-\frac{k}{2T_s})(-1)^k \]
+\[=\boxed{\frac{1}{T_s}\sum_{k=-\infty}^\infty X(f-\frac{k}{T_s}-\frac{1}{2T_s})} \]
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Can $x(t)$ be reconstructed from $y(t)$ by using a linear time-invariant system? Why?
+} 
+\answer{
+No, because as we saw the spectrum of y(t) has shifted copies of X(f) and none of these copies are in the center so we need to use a bandpass filter and then shift the signal to reconstruct x(t), this shifting in the frequency domain is equal to multiplying an exponential function in the time domain and this function is time-varying so we cant reconstruct x(t) using a linear time-invariant system.
+}
+\end{subquestion}
+%--------------------------------------------
+\begin{subquestion}{Can $x(t)$ be reconstructed from $y(t)$ by using a linear time-varying system? How?
+} 
+\answer{
+Yes, we can use a bandpass filter and then shift the signal,
+\[\boxed{x(t)=e^{-j2\pi Wt}\mathcal{F}^{-1}\left[T_{s}\sqcap (\frac{f-W}{2W})Y(f)  \right] }\]
+}
+\end{subquestion}
+
+\end{question}
+\pagebreak
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 6
+%----------------------------------------------------------------------------------------
+\begin{question}
+
+\questiontext{A stationary source is distributed according to the triangle probability density function $f_X(x)=0.5\Lambda(0.5x)$. This source is quantized using the four-level uniform quantizer
+$$
+Q(x)=
+\begin{cases}
+1.5, & 1<x\le 2\\
+0.5, & 0<x\le 1\\
+-0.5, & -1<x\le 0\\
+-1.5, & -2\le x\le -1\\
+\end{cases}
+$$
+Determine the probability density function of the random variable representing the quantizer error $X-Q(X)$.
+}
+
+\answer{
+We assume $\tilde{X}=X-Q(X) $ \\~\\
+It's obvious that $f_{\tilde{x}}(\tilde{x})$ is zero for $|\tilde{x}|>0.5$ but for $|\tilde{x}|\leq 0.5$ we should consider diffrent states.\\~\\
+we want to calculate $\mathcal{P}\{\tilde{X}<a\} \hspace{0.2cm} for\hspace{0.2cm} -0.5 < a \leq +0.5$,\\
+\[\mathcal{P}\{\tilde{X}<a  \} = \mathcal{P}\{X-Q(X)<a  \} = \mathcal{P}\{X<a+Q(X)  \} \]\\
+\[1<X\leq2 \Rightarrow \mathcal{P}\{X<a+Q(X) \}= \mathcal{P}\{1<X<a+1.5 \}   \]
+\[ \hspace{1.7cm} = \int_{1}^{a+1.5}f_x(x)\,dx = \int_{1}^{a+1.5}\frac{-x+2}{4}\,dx = \left(\frac{-x^2}{8}+\frac{x}{2}  \right)\Big|^{a+1.5}_{1} \]
+
+\[0<X\leq1  \Rightarrow \mathcal{P}\{X<a+Q(X) \}= \mathcal{P}\{0<X<a+0.5 \}   \]
+\[ \hspace{1.7cm} = \int_{0}^{a+0.5}f_x(x)\,dx = \int_{1}^{a+0.5}\frac{-x+2}{4}\,dx = \left(\frac{-x^2}{8}+\frac{x}{2}  \right)\Big|^{a+0.5}_{0} \]
+
+\[-1<X\leq0    \Rightarrow \mathcal{P}\{X<a+Q(X) \}= \mathcal{P}\{-1<X<a-0.5 \}   \]
+\[ \hspace{1.7cm} = \int_{-1}^{a-0.5}f_x(x)\,dx = \int_{-1}^{a-0.5}\frac{x+2}{4}\,dx = \left(\frac{x^2}{8}+\frac{x}{2}  \right)\Big|^{a-0.5}_{-1} \]
+
+\[-2<X\leq-1  \Rightarrow \mathcal{P}\{X<a+Q(X) \}= \mathcal{P}\{-2<X<a-1.5 \}   \]
+\[ \hspace{1.7cm} = \int_{-2}^{a-1.5}f_x(x)\,dx = \int_{-2}^{a-1.5}\frac{-x+2}{4}\,dx = \left(\frac{x^2}{8}+\frac{x}{2}  \right)\Big|^{a-1.5}_{-2} \]
+
+\[\Rightarrow  \mathcal{P}\{\tilde{X}<a\} =  \left(\frac{-x^2}{8}+\frac{x}{2}  \right)\Big|^{a+1.5}_{1} +  \left(\frac{-x^2}{8}+\frac{x}{2}  \right)\Big|^{a+0.5}_{0} + \left(\frac{x^2}{8}+\frac{x}{2}  \right)\Big|^{a-0.5}_{-1} + \left(\frac{x^2}{8}+\frac{x}{2}  \right)\Big|^{a-1.5}_{-2} \]
+\[= a+\frac{1}{2} \rightarrow F_{\tilde{X}}(a) = a+\frac{1}{2} \rightarrow f_{\tilde{x}}(a) =\frac{dF_{\tilde{X}}(a)}{da}= 1  \]
+
+\[\rightarrow \boxed{ f_{\tilde{x}}(\tilde{x}) = \left \{
+						\begin{array}{ll}
+							1, \hspace{1cm} |\tilde{x}| \leq 0.5 \\~\\
+								0,  \hspace{1cm} |\tilde{x}| > 0.5
+						\end{array}
+						\right.}
+\]
+}
+\end{question}
+
+\assignmentSection{Software Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 7
+%----------------------------------------------------------------------------------------
+\begin{question}
+
+\questiontext{A quantizer with $2^\nu$ quantized levels working over the input range $[-1,1]$ is fed with a zero-mean Gaussian random variable having the variance $\sigma^2$. Develop a MATLAB/Python code to calculate the signal to quntization noise ratio when the quntization intervals are uniformly distributed and when the quantization intervals are nonuniformly distributed according to $A$-law companding method with the parameter $A$. Discuss the results for different values of $\nu$, $\sigma^2$, and $A$. Feel free to plot any suitable curve to better describe the observations.
+}
+\answer{
+There is a Matlab file named HW4-Q7 in the zip file.
+\begin{figure}[H]
+	\includegraphics[width=14cm]{fig/4.jpg}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=13cm]{fig/5.jpg}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=13cm]{fig/1.jpg}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=13cm]{fig/2.jpg}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{fig/3.jpg}
+\end{figure}
+As we can see, increasing the variance of the input first increases the SQNR but after a specific amount the SQNR decreases.\\
+then, we can see by increasing the number of bits(nu), the SQNR increases too, and the diagram is linear approximately.
+and finally, we see increasing A causes an increase in SQNR at first but then SQNR decreases smoothly.
+}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+\pagebreak
+\assignmentSection{Bonus Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 8 
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{The DCT of an $N\times N$ picture with luminance function $x(m,n), 0\le m,n\le N-1$ can be obtained as
+\begin{align*}
+X(0,0)&=\frac{1}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} x(k,l)\\
+X(u,v)&=\frac{2}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} x(k,l)\cos\big[\frac{(2k+1)u\pi}{2N} \big]\cos\big[\frac{(2l+1)v\pi}{2N} \big], \quad u,v\neq 0
+\end{align*}
+The $X(0,0)$ coefficient is usually called the DC component, and the other coefficients are called the AC components. Find the DCT of a constant picture having $x(m,n)=C, 0\le m,n\le N-1$.
+}
+
+\answer{
+\[X(0,0)=\frac{1}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} C =\frac{1}{N} \times N^2C = NC   \]
+\[X(u,v)=\frac{2}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} C\cos\big[\frac{(2k+1)u\pi}{2N} \big]\cos\big[\frac{(2l+1)v\pi}{2N} \big]  \]
+\[= \frac{2C}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} \cos\big[\frac{(2k+1)u\pi}{2N} \big]\cos\big[\frac{(2l+1)v\pi}{2N} \big]  \]
+First, we want to prove the following equation:
+\[\begin{split} \\
+	\sum_{n=0}^{N-1} \cos(a + nd) =
+	\begin{cases}
+	N \cos a & \text{if } \sin(\frac{1}{2}d) = 0 \\
+	R \cos ( a + (N - 1) \frac{1}{2} d) & \text{otherwise}
+	\end{cases}
+\end{split}\]\\
+\[R \triangleq \frac{\sin(N \frac{1}{2}d)}{\sin(\frac{1}{2} d)}\]
+For $\sin(\frac{1}{2}d) = 0$,\\~\\
+$\sin(\frac{d}{2})=0 \rightarrow$ d is a multiple of $2\pi$ \[\rightarrow \cos(a) = \cos(a + d) = \cos(a + 2 d) ... \Rightarrow \boxed{ \sum_{n=0}^{N-1} \cos(a + nd) = N \cos a}\]
+
+For $\sin(\frac{1}{2}d) \neq 0$,\\~\\
+\[C \triangleq \sum_{n=0}^{N-1}\cos(a + nd)\]
+Only if $\sin(\frac{1}{2}d) \neq 0$, we can safely multiply both sides by $2\sin(\frac{1}{2}d)$:
+\[\rightarrow  2 \sin(\frac{1}{2} d) C = \sum_{n=0}^{N-1}2 \cos(a + nd) \sin(\frac{1}{2}d) \]
+\[\rightarrow 2 \sin(\frac{1}{2} d) C =\sum_{n=0}^{N-1} \bigg ( \sin(a + (n + \frac{1}{2}) d) - \sin(a + (n -\frac{1}{2}) d) \bigg )\]
+\[\rightarrow 2 \sin(\frac{1}{2} d) C = \bigg ( \sin(a + \frac{1}{2}d) - \sin(a - \frac{1}{2}d) \bigg )+\bigg ( \sin(a + \frac{3}{2}d) - \sin(a + \frac{1}{2}d) \bigg ) + ... \]
+\[+\bigg ( \sin(a + (N - \frac{3}{2}) d) - \sin(a + (N - \frac{5}{2} d) \bigg ) +\bigg ( \sin(a + (N - \frac{1}{2}) d) - \sin(a + (N - \frac{3}{2} d) \bigg )\]
+The series telescopes, because the second term at each iteration cancels the first term at the previous iteration. We are left only with the first term in the last iteration and the second term from the first:
+\[\rightarrow 2 \sin(\frac{1}{2} d) C =\sin(a + (N - \frac{1}{2}) d) - \sin(a - \frac{1}{2} d)\]
+\[\rightarrow  2 \sin(\frac{1}{2} d) C =2 \cos( a + (N - 1) \frac{1}{2} d ) \sin( N \frac{1}{2} d )\]
+\[\Rightarrow \boxed{\sum_{n=0}^{N-1} \cos(a + nd) = \frac{\sin(N \frac{1}{2}d)}{\sin(\frac{1}{2} d)}\times \cos ( a + (N - 1) \frac{1}{2} d) }\]
+Now after proving this equation we want to use it in this problem,
+\[X(u,v)=  \frac{2C}{N}\sum_{k=0}^{N-1}\sum_{l=0}^{N-1} \cos\big[\frac{(2k+1)u\pi}{2N} \big]\cos\big[\frac{(2l+1)v\pi}{2N} \big] \]
+\[= \frac{2C}{N}\sum_{k=0}^{N-1} \cos\big[\frac{(2k+1)u\pi}{2N}\big]\sum_{l=0}^{N-1} \cos\big[\frac{(2l+1)v\pi}{2N} \big] \]
+Now we want to calculate $ \sum_{l=0}^{N-1} \cos\big[\frac{(2l+1)v\pi}{2N} \big]$,\\
+\[ \cos\big[\frac{(2l+1)v\pi}{2N} \big] = \cos\big[\frac{v\pi}{2N}+l\frac{v\pi}{N}  \big] \rightarrow \boxed{a=\frac{v\pi}{2N}}, \boxed{n=l} , \boxed{d=\frac{v\pi}{N}} \]
+\[\begin{split} \\
+	\sum_{l=0}^{N-1}\cos\big[\frac{(2l+1)v\pi}{2N} \big] =
+	\begin{cases}
+	N \cos \left( \frac{v\pi}{2N} \right) & \text{if } \sin\left(\frac{v\pi}{2N}\right) = 0 \\
+	R \cos ( \frac{v\pi}{2N} + (N - 1) \frac{v\pi}{2N}) & \text{otherwise}
+	\end{cases}
+\end{split}\]\\
+\[R = \frac{\sin(N  \frac{v\pi}{2N})}{\sin( \frac{v\pi}{2N})}\]
+\[ \Rightarrow  \begin{split} \\
+	\sum_{l=0}^{N-1}\cos\big[\frac{(2l+1)v\pi}{2N} \big] =
+	\begin{cases}
+	N \cos \left( \frac{v\pi}{2N} \right) & \text{if } \sin\left(\frac{v\pi}{2N}\right) = 0 \\
+	\frac{\frac{1}{2}\sin(v\pi)}{\sin(\frac{v\pi}{2N}) } =0 & \text{otherwise}
+	\end{cases}
+\end{split} \]
+Also as it mentioned in question, $ 0\le u,v\le N-1$ so $\sin\left(\frac{v\pi}{2N}\right)$ can not be zero,
+\[\Rightarrow \sum_{l=0}^{N-1}\cos\big[\frac{(2l+1)v\pi}{2N} \big] = 0
+\Rightarrow\boxed{  \begin{split} \\
+	X(m,n) =
+	\begin{cases}
+	0 & u \neq 0 \& v\neq 0 \\
+	NC & u=0 \& v=0
+	\end{cases}
+\end{split}} \]
+
+}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 7
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{Return your answers by filling the \LaTeX template of the assignment.}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
