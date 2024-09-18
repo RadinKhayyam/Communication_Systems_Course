@@ -1,0 +1,275 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cleese Assignment (For Students)
+% LaTeX Template
+% Version 2.0 (27/5/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Author:
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[fleqn,11pt]{article}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\usepackage{amsmath, amssymb}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\sgn}{sgn}
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+% Required
+\newcommand{\assignmentQuestionName}{Question} % The word to be used as a prefix to question numbers; example alternatives: Problem, Exercise
+\newcommand{\assignmentClass}{Communication Systems (Taught by Mohammad Hadi)\\Assignment 5 (Due on DDD.,\ mmm.\ dd,\ yyyy)} % Course (Lecturer)\\Assignment (Due date)
+\newcommand{\assignmentTitle}{} % Assignment title or name
+\newcommand{\assignmentAuthorName}{Student Name\\Student Number} % Student name\\Student number
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+\lstset{language=Matlab,%
+    basicstyle={\scriptsize},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=5pt, % this defines how far the numbers are from the text
+    emph=[1]{break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\assignmentSection{Mathematical Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 1
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{Show that if the in-phase $x_i(t)$ and quadrature $x_q(t)$ components of the passband digital signal $$x(t)=A_c[x_i(t)\cos(2\pi f_c t+\theta)-x_q(t)\sin(2\pi f_c t+\theta)]$$ are statistically independent and at least one has zero mean, the corresponding power spectral density equals
+$$
+S_x(f)=\frac{A_c^2}{4}[S_{x_i}(f-f_c)+S_{x_i}(f+f_c)+S_{x_q}(f-f_c)+S_{x_q}(f+f_c)]
+$$
+, where $S_{x_i}(f)$ and $S_{x_q}(f)$ are the power spectral densities of the in-phase and quadrature components, respectively.
+}
+
+\answer{}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 2
+%----------------------------------------------------------------------------------------
+\pagebreak
+\begin{question}
+\questiontext{Calculate the bit error rate of the binary polar NRZ signaling with amplitudes $\pm \frac{A}{2}$ polluted by a zero-mean Gaussian noise with variance $\sigma^2$. Assume that ISI is perfectly canceled, no synchronization mismatch is imposed, transmitted bits are equally-probable, and the decision threshold is $V$. Find the optimum value of the decision threshold and the corresponding minimum bit error rate.
+}
+\answer{
+\[P_e = P_0\hspace{1mm}P_{e|0} + P_1\hspace{1mm} P_{e|1}\]
+\[ P_1 = p_0 = \frac{1}{2} \:\rightarrow \:p_e = \frac{1}{2}(P_{e|0} + P_{e|1})\] 
+\[= \frac{1}{2}\left(P[y(t_k) > V | a_k = -\frac{A}{2} ] + P[y(t_k) \leq V | a_k = \frac{A}{2} ]\right)\]
+\[ = \frac{1}{2}\left(P[n(t_k)-\frac{A}{2} > V  ] + P[n(t_k)+\frac{A}{2} \leq V  ]\right)\]
+\[= \frac{1}{2}\left(P[n(t_k) > V +\frac{A}{2} ] + P[n(t_k) \leq V-\frac{A}{2}  ]\right)\]
+\[=\boxed{ \frac{1}{2}\left(Q(\frac{V+\frac{A}{2}}{\sigma})+Q(\frac{\frac{A}{2}-V}{\sigma})\right)}\]
+\[=\frac{1}{2}\left(\int_{\frac{V+\frac{A}{2}}{\sigma}}^{\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}\:dt + \int_{\frac{\frac{A}{2}-V}{\sigma}}^{\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}\:dt \right)\]
+As we know,
+\[ \displaystyle{ \frac{d}{dx} \left (\int_{a(x)}^{b(x)} f(x,t)\,dt \right )= f\big(x,b(x)\big)\cdot \frac{d}{dx} b(x) - f\big(x,a(x)\big)\cdot \frac{d}{dx} a(x) + \int_{a(x)}^{b(x)}\frac{\partial}{\partial x} f(x,t) \,dt, }\]
+\[\Rightarrow \frac{dp_e}{dv} = \frac{1}{2\sqrt{2\pi}}\left( -\frac{1}{\sigma}\times e^{-\frac{\left(V+\frac{A}{2}\right)^2}{2\sigma^2}} + \frac{1}{\sigma}e^{-\frac{\left(\frac{A}{2}-V\right)^2}{2\sigma^2}}\right)\]
+To find optimum V we need to have $\frac{dP_e}{dV} = 0$ so,
+\[ \frac{1}{\sigma}e^{-\frac{\left(\frac{A}{2}-V\right)^2}{2\sigma^2}} = \frac{1}{\sigma}\times e^{-\frac{\left(V+\frac{A}{2}\right)^2}{2\sigma^2}}\]
+\[\Rightarrow \frac{A}{2} -V = V + \frac{A}{2} \rightarrow \boxed{V = 0}\]
+Corresponding bit error rate,
+\[ = \frac{1}{2}\left(Q(\frac{A}{2\sigma})+Q(\frac{A}{2\sigma}) \right)= \boxed{Q(\frac{A}{2\sigma})}\]
+}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 3
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+\questiontext{Calculate the power spectral density of an $M$ary twined line coding with the pulse $$p(t)=\frac{A}{2}\sqcap(\frac{t}{D/2})-\frac{A}{2}\sqcap(\frac{t-D/2}{D/2})$$ and levels $a_k=\pm 1, \pm 3, \cdots, \pm M/2$. Find the corresponding bandwidth, average power, average DC, power spectral density at zero frequency, baud rate, and bit rate.}
+
+\answer{
+\[p(t)=\frac{A}{2}\sqcap(\frac{t}{D/2})-\frac{A}{2}\sqcap(\frac{t-D/2}{D/2}) \]
+\[\rightarrow P(f)=\frac{AD}{4}\sinc(\frac{Df}{2})-\frac{AD}{4}\sinc(\frac{Df}{2})e^{jD\pi f}=\frac{AD}{4}\sinc(\frac{Df}{2})(1-e^{jD\pi f}) \]
+\[R_a[0]=E\{a_k,a_k\} = \frac{2}{M}\sum^{\frac{M}{2}}_{i=1}(2i-1)^2\]
+As we know, sum of squares of first n natural number is equal to,
+\[\sum^{n}_{i=1}i^2 = \frac{n(n+1)(2n+1)}{6} \]
+so for first n even number we will have,
+\[\sum^{n}_{i=1}(2i)^2 = 2^2\sum^{n}_{i=1}i^2= \frac{2n(n+1)(2n+1)}{3} \]
+and finally for first n odd numbers,
+\[ \sum^{n}_{i=1}(2i-1)^2 = \sum^{2n}_{i=1}i^2 - \sum^{n}_{i=1} (2i)^2 = \frac{2n(2n+1)(4n+1)}{6} - \frac{2n(n+1)(2n+1)}{3}\]
+\[=\frac{n(2n+1)(2n-1)}{3}\]
+\[\Rightarrow R_a[0]=\frac{2}{M}\frac{(\frac{M}{2})(M+1)(M-1)}{3}=\frac{M^2}{3}-\frac{1}{3} \]
+\[R_a[n]=E\{a_{n+k},a_k\}=(\frac{1}{M}\sum^{\frac{M}{2}-1}_{i=\frac{-M}{2}}(2i+1)^2) = 0\]
+\[S_x(f)=\frac{1}{D}|P(f)|^2\sum^{\infty}_{-\infty}R_a[n]e^{-j2\pi nfD}\]
+\[=\frac{1}{D}(\frac{AD}{4}\sinc(\frac{Df}{2})(1-e^{jD\pi f}))^2(\frac{M^2}{3}-\frac{1}{3}) = \frac{A^2 D}{16}\sinc^2(\frac{Df}{2})(1-e^{jD\pi f})^2(\frac{M^2-1}{3}) \]
+\[\Rightarrow \boxed{S_x(0)=0}\]
+\[\boxed{DC = 0} , \boxed{P_{avg}=R_a[0]=\frac{M^2-1}{3}}\]
+\[\boxed{bandwidth=\frac{2}{D}} , \boxed{r=\frac{1}{D}} , \boxed{r_b = r \log_{2}(\frac{M}{2}+1)=\frac{\log_{2}(\frac{M}{2}+1)}{D}}\]
+}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 4
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+\questiontext{Prove that the power spectral density of the $M$ary PSK is
+$$
+S_x(f)=\frac{A_c^2}{4r}\big[\text{sinc}^2(\frac{f-f_c}{r})+\text{sinc}^2(\frac{f+f_c}{r}) \big]
+$$
+}
+
+\answer{}
+
+\end{question}
+
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 5
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+\questiontext{Show that the spectrum of the Nyquist pulse
+$$
+p(t)=\frac{\cos(2\pi \beta t)}{1-(4\beta t)^2}\text{sinc}(rt)
+$$
+is
+$$
+P(f)=
+\begin{cases}
+\frac{1}{r}, \quad & |f|<\frac{r}{2}-\beta\\
+\frac{1}{r}\cos^2\big(\frac{\pi}{4\beta}(|f|-\frac{r}{2} +\beta)\big), \quad & \frac{r}{2}-\beta<|f|<\frac{r}{2}+\beta\\
+0, \quad & |f|>\frac{r}{2}+\beta
+\end{cases}
+$$
+Evaluate the result for the special case of $\beta=\frac{r}{2}$.
+}
+
+\answer{
+\[p(t)=\frac{\cos(2\pi \beta t)}{1-(4\beta t)^2}\text{sinc}(rt)\]
+\[\Rightarrow P(f)=\mathcal{F}\{\frac{\cos(2\pi \beta t)}{1-(4\beta t)^2}\text{sinc}(rt)\}\]
+As we know,
+\[\mathcal{F}\{\sqcap(\frac{t}{2\beta})\}=2\beta\sinc(2\beta f)\]
+\[\Rightarrow \mathcal{F}\{\cos(\frac{\pi t}{2\beta})\sqcap(\frac{t}{2\beta})\}=\beta[\sinc(2\beta(f-\frac{1}{4\beta}))+\sinc(2\beta(f+\frac{1}{4\beta}))\]
+\[=\beta[\frac{\sin(2\pi \beta f -\frac{\pi}{2})}{2\pi \beta f -\frac{\pi}{2}}+\frac{\sin(2\pi \beta f +\frac{\pi}{2})}{2\pi \beta f +\frac{\pi}{2}}]= \frac{4\beta \cos(2\pi \beta f)}{\pi(1-(4\beta f)^2)}\]
+Now we want to use duality property,
+\[\Rightarrow \mathcal{F}\{\frac{\cos(2\pi \beta t)}{1-(4\beta t)^2}\}= \frac{\pi}{4\beta}\cos(\frac{\pi f}{2\beta}\sqcap(\frac{f}{2\beta})\]
+\[\Rightarrow P(f)= \left(\frac{\pi}{4\beta}\cos(\frac{\pi f}{2\beta})\sqcap(\frac{f}{2\beta}) \right)*\left(\frac{1}{r}\sqcap(\frac{f}{r}) \right)\]
+$\Rightarrow $P(f)=
+\begin{cases}
+\frac{1}{r}, \quad & |f|<\frac{r}{2}-\beta\\
+\frac{1}{2r} + \frac{1}{2r} \cos(\frac{\pi}{2\beta}(|f|-\frac{r}{2}+\beta))), \quad & \frac{r}{2}-\beta<|f|<\frac{r}{2}+\beta\\
+0, \quad & |f|>\frac{r}{2}+\beta
+\end{cases}\\~\\
+$\Rightarrow$ P(f)=
+\begin{cases}
+\frac{1}{r}, \quad & |f|<\frac{r}{2}-\beta\\
+\frac{1}{r}\cos^2\big(\frac{\pi}{4\beta}(|f|-\frac{r}{2} +\beta)\big), \quad & \frac{r}{2}-\beta<|f|<\frac{r}{2}+\beta\\
+0, \quad & |f|>\frac{r}{2}+\beta
+\end{cases}\\~\\
+And for $\beta = \frac{r}{2}$,
+\[P(f)=\begin{cases}
+\frac{1}{r}\cos^2(\frac{\pi}{2r}|f|), \quad & 0<|f|<r\\
+0, \quad & O.W
+\end{cases}
+\]
+}
+
+\end{question}
+
+
+\assignmentSection{Software Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 6
+%----------------------------------------------------------------------------------------
+\begin{question}
+
+\questiontext{Fig. \ref{fig:Q6} shows an additive Linear Feedback Shift Register (LFSR) scrambler used in Digital Video Broadcasting (DVB). At the beginning of transmission, the shift register is loaded by the specified sync word and then, for each bit transmission, a feedback bit is calculated. The feedback bit is XORed with the transmitted bit and also used to shift the register. Implement the scrambler in MATLAB/Python and demonstrate its performance for several sample bit sequences. How can the scrambler be used for descrambling to recover the original bit sequence? 
+}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{Fig/Q6.png}
+\caption{An additive scrambler used in DVB.}\label{fig:Q6}
+\end{figure}
+\answer{
+
+}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+
+\assignmentSection{Bonus Questions}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 6
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{Consider an $M$ary ASK digital transmission system with the in-phase component 
+$$
+x_i(t)=\sum_{k}a_kp(t-kD), \quad a_k=0,1,\cdots, M-1, \quad p(t)=A\sqcap(\frac{t}{D})
+$$
+, where the symbols $a_k$ have identical and independent transmission probability. At the receiver, a received noisy in-phase component is recovered and sampled at proper time instances $t_K$. Then, the noisy sample $y(t_K)=n(t_k)+a_kA$ is fed to a decision circuit to decide which symbol is transmitted, where $n(t_K)$ is a zero-mean Gaussian noise distributed as $n(t_k)\sim \mathcal{N}(0,\sigma^2)$. The decision circuits decides on the received symbol $\tilde{a}_K$ as
+$$
+\tilde{a}_K=
+\begin{cases}
+0 \quad & y(t_K)\le \frac{A}{2}\\
+1 \quad &\frac{A}{2} <y(t_K)\le \frac{3A}{2}\\
+\vdots\quad \quad&  \vdots \\
+M-2 \quad &\frac{(2M-5)A}{2} <y(t_K)\le \frac{(2M-3)A}{2}\\
+M-1 \quad &\frac{(2M-3)A}{2} <y(t_K)
+\end{cases}
+$$
+Calculate the symbol bit error rate, i.e., the probability of an error in detecting a symbol.
+}
+
+\answer{}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 7
+%----------------------------------------------------------------------------------------
+
+\begin{question}
+
+\questiontext{Return your answers by filling the \LaTeX template of the assignment.}
+
+\end{question}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
